@@ -1,0 +1,35 @@
+{
+  "name": "colvmn-v",
+  "version": "1.0.0",
+  "description": "Colvmn V is a user-owned cooperative social media platform centered around events. It allows users to discover and share upcoming events with friends, making social coordination easy and community-driven. Users can curate their event feeds, chat with friends, and enjoy a platform that promotes democratic ownership and transparency.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivcolvmn/colvmn-v.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vivcolvmn/colvmn-v/issues"
+  },
+  "homepage": "https://github.com/vivcolvmn/colvmn-v#readme",
+  "dependencies": {
+    "create-react-app": "^5.0.1"
+  },
+  "devDependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^9.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-auth": "^2.0.1",
+    "nodemon": "^3.1.7",
+    "pg": "^8.13.0",
+    "socket.io": "^4.8.0"
+  }
+}
