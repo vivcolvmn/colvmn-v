@@ -338,6 +338,18 @@ app.put('/api/user/edit_event/:event_id', authenticateToken, async (req, res) =>
     }
 });
 
+// PROD: Construct path to build folder in ES Module
+const filename = fileURLToPath(import.meta.url);
+const dirname = dirname(filename);
+
+// PROD: Serve static build files from React (Place this after initializing the app, before the wildcard catch-all)
+app.use(express.static(path.join(dirname, '../client/dist')));
+
+// PROD: Ensure all routes are served the index.html file to allow React to manage routing (should be the last defined route)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+});
+
 // Server listening on specified PORT
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

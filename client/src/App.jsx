@@ -41,7 +41,7 @@ function App() {
     };
 
     return (
-        <Router>
+        <><Router>
             <div className="App">
                 {/* Conditional rendering for login or homepage */}
                 {!isLoggedIn ? (
@@ -51,48 +51,41 @@ function App() {
                         {/* Home page route */}
                         <Route
                             path="/"
-                            element={
-                                <HomePage
-                                    viewEventDetails={viewEventDetails}
-                                    viewUserProfile={viewUserProfile}
-                                    showSearchEvents={showSearchEvents}
-                                    activeComponent={activeComponent} // Pass active component state to HomePage
-                                />
-                            }
-                        />
+                            element={<HomePage
+                                viewEventDetails={viewEventDetails}
+                                viewUserProfile={viewUserProfile}
+                                showSearchEvents={showSearchEvents}
+                                activeComponent={activeComponent} // Pass active component state to HomePage
+                            />} />
 
                         {/* Event detail route */}
                         <Route
                             path="/event/:eventId"
-                            element={<EventDetail eventId={selectedEventId} />}
-                        />
+                            element={<EventDetail eventId={selectedEventId} />} />
 
                         {/* User profile route */}
                         <Route
                             path="/profile/:userId"
-                            element={<Profile userId={selectedUserId} />}
-                        />
+                            element={<Profile userId={selectedUserId} />} />
 
                         {/* Search events route */}
                         <Route
                             path="/search"
-                            element={<SearchEvents />}
-                        />
+                            element={<SearchEvents />} />
 
                         {/* Redirect to home if no matching route */}
                         <Route path="*" element={<Navigate to="/" replace />} />
-                    </Routes>
+                    </Routes>)} {/* Render the active component based on button clicks */}
 
-                    {/* Render the active component based on button clicks */}
-                    <div className="dynamic-content">
-                        {activeComponent === 'eventFeed' && <HomePage />}
-                        {activeComponent === 'eventDetail' && <EventDetail eventId={selectedEventId} />}
-                        {activeComponent === 'profile' && <Profile userId={selectedUserId} />}
-                        {activeComponent === 'searchEvents' && <SearchEvents />}
-                    </div>
-                )}
+                {/* Render the active component based on button clicks */}
+
             </div>
-        </Router>
+        </Router><div className="dynamic-content">
+                {activeComponent === 'eventFeed' && <HomePage />}
+                {activeComponent === 'eventDetail' && <EventDetail eventId={selectedEventId} />}
+                {activeComponent === 'profile' && <Profile userId={selectedUserId} />}
+                {activeComponent === 'searchEvents' && <SearchEvents />}
+            </div></>
     );
 }
 
