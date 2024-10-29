@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import AuthForm from './AuthForm'; // Registration/Login component
+import AuthForm from './RegistrationLogin'; // Registration/Login component
 import HomePage from './HomePage'; // Home page with event feed and friends list
 import EventDetail from './EventDetail'; // Event detail component
 import Profile from './Profile'; // User profile component
