@@ -1,4 +1,5 @@
 // Home Page Component
+//Displays user profile info, event feed, and friends list
 
 // State:
 // - userEvents, friendEvents
@@ -7,31 +8,77 @@
 // - fetchUserEvents: GET request to fetch user's liked/created events
 // - fetchFriendEvents: GET request to fetch friends' events
 
-function HomePage() {
-    const [userEvents, setUserEvents] = useState([]);
-    const [friendEvents, setFriendEvents] = useState([]);
+import { useState, useEffect } from 'react';
+import EventFeed from './EventFeed'; // Component for the entire event feed
+import FriendsList from './FriendsList'; // Component for friends list
 
+function HomePage() {
+    // State to store the user's profile information
+    const [userProfile, setUserProfile] = useState({});
+
+    // State to manage error messages
+    const [errorMessage, setErrorMessage] = useState('');
+
+    // Retrieve JWT token from local storage for authenticated requests
+    const getAuthToken = () => localStorage.getItem('token');
+
+    // Fetch user profile data when the component mounts
     useEffect(() => {
-      fetchUserEvents();
-      fetchFriendEvents();
+        fetchUserProfile();
     }, []);
 
-    const fetchUserEvents = async () => {
-      // GET request to api/user for user events
-    };
+    // Function to fetch the user's profile information from the backend API
+    const fetchUserProfile = async () => {
+        try {
+            const response = await fetch(`/api/user/${userProfile.user_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`, // Include JWT token in headers
+                },
+            });
 
-    const fetchFriendEvents = async () => {
-      // GET request to api/user/friends for friend's events
+            if (!response.ok) throw new Error('Failed to fetch user profile');
+
+            // Update state with user profile data
+            setUserProfile(await response.json());
+            setErrorMessage(''); // Clear error message on successful fetch
+        } catch (err) {
+            console.error('Error fetching user profile:', err);
+            setErrorMessage('Could not fetch profile. Please try again.');
+        }
     };
 
     return (
-      <div>
-        <h1>Home</h1>
         <div>
-          {/* Render user and friend events */}
-        </div>
-      </div>
-    );
-  }
+            <h1>Home</h1>
 
-  export default HomePage;
+            {/* Display error message if present */}
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
+            {/* Render user's profile information */}
+            <div>
+                {userProfile.profilePicture && (
+                    <img src={userProfile.profilePicture} alt="Profile" />
+                )}
+                <p>Member Since: {userProfile.joinDate}</p>
+                <p>Quote: "{userProfile.quote}"</p>
+                <p>Bio: {userProfile.bio}</p>
+            </div>
+
+            {/* Render the entire event feed */}
+            <div>
+                <h2>Your Event Feed</h2>
+                <EventFeed />
+            </div>
+
+            {/* Render friends list */}
+            <div>
+                <h2>Friends</h2>
+                <FriendsList />
+            </div>
+        </div>
+    );
+}
+
+export default HomePage;

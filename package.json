@@ -2,9 +2,21 @@
   "name": "colvmn-v",
   "version": "1.0.0",
   "description": "Colvmn V is a user-owned cooperative social media platform centered around events. It allows users to discover and share upcoming events with friends, making social coordination easy and community-driven. Users can curate their event feeds, chat with friends, and enjoy a platform that promotes democratic ownership and transparency.",
-  "main": "index.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js",
+    "client": "vite",
+    "install-all": "npm install && npm install --prefix client && npm install --prefix server",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "jest"
+  },
+  "jest": {
+    "verbose": true
   },
   "repository": {
     "type": "git",
@@ -18,18 +30,53 @@
   },
   "homepage": "https://github.com/vivcolvmn/colvmn-v#readme",
   "dependencies": {
-    "create-react-app": "^5.0.1"
+    "18": "^0.0.0",
+    "20": "^3.1.9",
+    "body-parser": "^1.20.3",
+    "concurrently": "^9.0.1",
+    "cors": "^2.8.5",
+    "create-react-app": "^5.0.1",
+    "express": "^4.21.0",
+    "latest": "^0.2.0",
+    "n": "^10.0.0",
+    "pg": "^8.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-syntax-typescript": "^7.25.4",
+    "@babel/preset-env": "^7.25.4",
+    "@eslint/js": "^9.9.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@types/body-parser": "^1.19.5",
+    "@types/express": "^5.0.0",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "babel-jest": "^29.7.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
     "express": "^4.21.1",
+    "express-openid-connect": "^2.17.1",
+    "globals": "^15.9.0",
+    "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-auth": "^2.0.1",
     "nodemon": "^3.1.7",
     "pg": "^8.13.0",
-    "socket.io": "^4.8.0"
+    "react-testing-library": "^8.0.1",
+    "socket.io": "^4.8.0",
+    "supertest": "^7.0.0",
+    "vite": "^5.4.1"
   }
 }
