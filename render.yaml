@@ -1,0 +1,18 @@
+name: server
+  plan: free
+  type: web
+  env: node
+  repo: https://github.com/vivcolvmn/colvmn-v
+  buildCommand: cd client && npm install && npm run build && cd .. && npm install
+  startCommand: npm start
+  envVars:
+key: DATABASE_URL
+    fromDatabase:
+      name: db
+      property: connectionString
+
+databases:
+
+name: db
+  plan: free
+  ipAllowList: []
