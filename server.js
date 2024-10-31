@@ -6,6 +6,10 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+
 
 dotenv.config();
 
@@ -339,16 +343,22 @@ app.put('/api/user/edit_event/:event_id', authenticateToken, async (req, res) =>
 });
 
 // PROD: Construct path to build folder in ES Module
-const filename = fileURLToPath(import.meta.url);
-const dirname = dirname(filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // PROD: Serve static build files from React (Place this after initializing the app, before the wildcard catch-all)
-app.use(express.static(path.join(dirname, '../client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // PROD: Ensure all routes are served the index.html file to allow React to manage routing (should be the last defined route)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-});
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'), (err) => {
+      if (err) {
+        console.error("Error serving index.html:", err);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+  });
+
 
 // Server listening on specified PORT
 const PORT = process.env.PORT || 5000;

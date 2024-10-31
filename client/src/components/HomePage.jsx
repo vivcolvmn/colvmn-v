@@ -9,7 +9,7 @@
 // - fetchFriendEvents: GET request to fetch friends' events
 
 import { useState, useEffect } from 'react';
-import EventFeed from './EventFeed'; // Component for the entire event feed
+import Event from './Event'; // Component for the entire event feed
 import FriendsList from './FriendsList'; // Component for friends list
 
 function HomePage() {
@@ -69,7 +69,7 @@ function HomePage() {
             {/* Render the entire event feed */}
             <div>
                 <h2>Your Event Feed</h2>
-                <EventFeed />
+                <Event />
             </div>
 
             {/* Render friends list */}

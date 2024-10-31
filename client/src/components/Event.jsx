@@ -13,7 +13,7 @@
 
 import { useState } from 'react';
 
-function EventFeed({ userEvents, likedEvents, onUpdate }) {
+function Event({ userEvents, likedEvents, onUpdate }) {
     const [error, setError] = useState(null); // Error state for displaying error messages
 
     // Retrieve JWT token from local storage for authenticated requests
@@ -159,4 +159,4 @@ function EventFeed({ userEvents, likedEvents, onUpdate }) {
     );
 }
 
-export default EventFeed;
+export default Event;

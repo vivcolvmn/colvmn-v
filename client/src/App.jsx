@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import AuthForm from './RegistrationLogin'; // Registration/Login component
-import HomePage from './HomePage'; // Home page with event feed and friends list
-import EventDetail from './EventDetail'; // Event detail component
-import Profile from './Profile'; // User profile component
-import SearchEvents from './SearchEvents';
+import AuthForm from './components/AuthForm'; // Registration/Login component
+import HomePage from './components/HomePage'; // Home page with event feed and friends list
+import EventDetail from './components/EventDetail'; // Event detail component
+import Profile from './components/Profile'; // User profile component
+import SearchEvents from './components/SearchEvents';
 
 function App() {
     // State to track if the user is logged in
