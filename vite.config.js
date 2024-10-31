@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  root: 'client', // Sets client as the root directory for Vite
+  root: 'client', // Set the root if your project structure requires it
+  plugins: [react()],
   build: {
-    outDir: 'dist', // Puts the built files into client/dist
+    outDir: 'dist', // Specify output directory
   },
 });

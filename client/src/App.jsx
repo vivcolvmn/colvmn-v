@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import AuthForm from './components/AuthForm'; // Registration/Login component

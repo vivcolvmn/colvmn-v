@@ -347,11 +347,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // PROD: Serve static build files from React (Place this after initializing the app, before the wildcard catch-all)
-app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.static(path.join(__dirname, '../colvmn-v/client/dist')));
 
 // PROD: Ensure all routes are served the index.html file to allow React to manage routing (should be the last defined route)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'), (err) => {
+    res.sendFile(path.join(__dirname, '../colvmn-v/client/dist/index.html'), (err) => {
       if (err) {
         console.error("Error serving index.html:", err);
         res.status(500).send("Internal Server Error");
