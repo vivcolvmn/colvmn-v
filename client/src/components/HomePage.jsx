@@ -69,7 +69,7 @@ function HomePage() {
             {/* Render the entire event feed */}
             <div>
                 <h2>Your Event Feed</h2>
-                <Event />
+                <Event userEvents={[]} likedEvents={[]} onUpdate={null}/>
             </div>
 
             {/* Render friends list */}
