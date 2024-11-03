@@ -381,7 +381,8 @@ app.use(express.static(path.join(__dirname, '../colvmn-v/client/dist')));
 
 // PROD: Ensure all routes are served the index.html file to allow React to manage routing (should be the last defined route)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../colvmn-v/client/dist/index.html'), (err) => {
+    // res.sendFile(path.join(__dirname, '../colvmn-v/client/dist/index.html')
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'), (err) => {
       if (err) {
         console.error("Error serving index.html:", err);
         res.status(500).send("Internal Server Error");
