@@ -1,14 +1,3 @@
-// Registration/Login Component
-
-// State:
-// - isRegisterMode: toggles between login and registration modes
-// - username, email, password, confirmPassword
-// - errorMessage: stores any error messages from registration or login
-
-// Functions:
-// - handleRegister: POST to /api/registered to save user data.
-// - handleLogin: POST to /api/login for Auth0 login and redirect.
-
 import { useState } from 'react';
 
 function AuthForm() {

@@ -1,92 +1,134 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import AuthForm from './components/AuthForm'; // Registration/Login component
-import HomePage from './components/HomePage'; // Home page with event feed and friends list
-import EventDetail from './components/EventDetail'; // Event detail component
-import Profile from './components/Profile'; // User profile component
-import SearchEvents from './components/SearchEvents';
+import React, { useState, useEffect } from 'react';
+import AuthForm from './components/AuthForm';
+import Events from './components/Event';
+import Profile from './components/Profile';
+import FriendsList from './components/FriendsList';
 
-function App() {
-    // State to track if the user is logged in
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Tracks if the user is logged in
+    const [view, setView] = useState('events'); // Controls which main component is displayed: 'events', 'profile', or 'friends'
+    const [selectedFriendId, setSelectedFriendId] = useState(null); // Stores the ID of the selected friend for viewing their profile
+    const [currentUser, setCurrentUser] = useState(null); // Stores current user data for the sidebar
 
-    // State to track the current active component to display in the HomePage feed area
-    const [activeComponent, setActiveComponent] = useState('eventFeed');
+    /**
+     * Checks for an existing token in localStorage on app load to verify authentication status.
+     * Sets the user as authenticated if a token is found.
+     */
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setIsAuthenticated(true);
+            fetchCurrentUser(); // Fetch current user data
+        }
+    }, []);
 
-    // State to store the selected event ID and user ID for viewing details
-    const [selectedEventId, setSelectedEventId] = useState(null);
-    const [selectedUserId, setSelectedUserId] = useState(null);
-
-    // Function to handle successful login
-    const handleLoginSuccess = () => {
-        setIsLoggedIn(true);
-        setActiveComponent('eventFeed'); // Show event feed by default on login
+    /**
+     * Fetches current user data for display in the sidebar.
+     */
+    const fetchCurrentUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/user/profile', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (response.ok) {
+                const userData = await response.json();
+                setCurrentUser(userData);
+            } else {
+                handleLogout(); // Log out if token is invalid
+            }
+        } catch (error) {
+            console.error('Failed to load user data:', error);
+            handleLogout(); // Log out on failure
+        }
     };
 
-    // Function to view details of a specific event
-    const viewEventDetails = (eventId) => {
-        setSelectedEventId(eventId);
-        setActiveComponent('eventDetail');
+    /**
+     * Handles successful authentication by setting the authenticated state
+     * and fetching user data.
+     */
+    const handleAuthSuccess = () => {
+        setIsAuthenticated(true);
+        fetchCurrentUser();
     };
 
-    // Function to view profile of a specific user
-    const viewUserProfile = (userId) => {
-        setSelectedUserId(userId);
-        setActiveComponent('profile');
+    /**
+     * Logs the user out by clearing the token from localStorage and resetting the state.
+     */
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+        setView('events'); // Reset to default view
     };
 
-    // Function to display the search events component
-    const showSearchEvents = () => {
-        setActiveComponent('searchEvents');
+    /**
+     * Renders different components based on the current view.
+     */
+    const renderContent = () => {
+        if (!isAuthenticated) {
+            return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+        }
+
+        switch (view) {
+            case 'events':
+                return <Events onAuthError={handleLogout} />;
+            case 'profile':
+                return selectedFriendId ? (
+                    <Profile userId={selectedFriendId} onClose={() => setView('events')} onAuthError={handleLogout} />
+                ) : (
+                    <Profile userId={currentUser?.user_id} isCurrentUser={true} onClose={() => setView('events')} onAuthError={handleLogout} />
+                );
+            case 'friends':
+                return <FriendsList onAuthError={handleLogout} />;
+            default:
+                return <Events onAuthError={handleLogout} />;
+        }
     };
 
     return (
-        <><Router>
-            <div className="App">
-                {/* Conditional rendering for login or homepage */}
-                {!isLoggedIn ? (
-                    <AuthForm onLoginSuccess={handleLoginSuccess} />
-                ) : (
-                    <Routes>
-                        {/* Home page route */}
-                        <Route
-                            path="/"
-                            element={<HomePage
-                                viewEventDetails={viewEventDetails}
-                                viewUserProfile={viewUserProfile}
-                                showSearchEvents={showSearchEvents}
-                                activeComponent={activeComponent} // Pass active component state to HomePage
-                            />} />
+        <div className="app-container">
+            <header className="app-header">
+                <h1>Welcome To Colvmn V</h1>
+                {isAuthenticated && (
+                    <button onClick={handleLogout} className="logout-btn">Logout</button>
+                )}
+            </header>
 
-                        {/* Event detail route */}
-                        <Route
-                            path="/event/:eventId"
-                            element={<EventDetail eventId={selectedEventId} />} />
+            <div className="main-content">
+                {isAuthenticated && currentUser && (
+                    <aside className="sidebar-left">
+                        <h3>{currentUser.username}</h3>
+                        <img src={currentUser.profile_picture} alt={`${currentUser.username}'s profile`} className="profile-pic"/>
+                        <p>Member since: {new Date(currentUser.member_since).toLocaleDateString()}</p>
+                        <p>Quote: "{currentUser.quote}"</p>
+                        <p>Bio: {currentUser.bio}</p>
+                        <button onClick={() => setView('profile')} className="view-profile-btn">Show Profile Details</button>
+                    </aside>
+                )}
 
-                        {/* User profile route */}
-                        <Route
-                            path="/profile/:userId"
-                            element={<Profile userId={selectedUserId} />} />
+                <main className="main-view">
+                    {renderContent()}
+                </main>
 
-                        {/* Search events route */}
-                        <Route
-                            path="/search"
-                            element={<SearchEvents />} />
-
-                        {/* Redirect to home if no matching route */}
-                        <Route path="*" element={<Navigate to="/" replace />} />
-                    </Routes>)} {/* Render the active component based on button clicks */}
-
-                {/* Render the active component based on button clicks */}
-
+                {isAuthenticated && currentUser && (
+                    <aside className="sidebar-right">
+                        <h3>Friends</h3>
+                        <ul className="friend-list">
+                            {currentUser.friends.slice(0, 5).map(friend => (
+                                <li key={friend.user_id} className="friend-item">
+                                    <span onClick={() => { setSelectedFriendId(friend.user_id); setView('profile'); }} className="friend-username">
+                                        {friend.username}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                        <button onClick={() => setView('friends')} className="view-all-friends-btn">View All Friends</button>
+                    </aside>
+                )}
             </div>
-        </Router><div className="dynamic-content">
-                {activeComponent === 'eventFeed' && <HomePage />}
-                {activeComponent === 'eventDetail' && <EventDetail eventId={selectedEventId} />}
-                {activeComponent === 'profile' && <Profile userId={selectedUserId} />}
-                {activeComponent === 'searchEvents' && <SearchEvents />}
-            </div></>
+        </div>
     );
-}
+};
 
 export default App;

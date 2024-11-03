@@ -155,7 +155,7 @@ app.post('/api/register', async (req, res) => {
     try {
         // Insert new user into the database
         const result = await pool.query(
-            'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
             [username, email, hashedPassword]
         );
         res.status(201).json(result.rows[0]);
@@ -260,6 +260,36 @@ app.post('/api/user/like_event/:event_id', authenticateToken, async (req, res) =
         res.status(500).json({ error: 'Server error' });
     }
 });
+
+// GET: Search for a profile by username
+// Allows users to search for profiles by username and returns matching user details
+app.get('/api/user/search', authenticateToken, async (req, res) => {
+    const { username } = req.query; // Extract username from query parameters
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username query parameter is required' });
+    }
+
+    try {
+        // Query the database for users whose username matches the query
+        const result = await pool.query(
+            'SELECT user_id, username, profile_picture, member_since, quote, bio FROM users WHERE username ILIKE $1 LIMIT 10',
+            [`%${username}%`]
+        );
+
+        // Check if any users matched the search
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No matching users found' });
+        }
+
+        // Return list of matching users
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Error searching for users by username:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 
 // DELETE: Remove friend
 // Removes a friend relationship between the authenticated user and specified friend ID

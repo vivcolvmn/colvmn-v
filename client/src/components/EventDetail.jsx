@@ -1,75 +1,122 @@
-// Event Detail Component
+import React, { useState } from 'react';
 
-// Props:
-// - eventId (ID of the event)
-
-// State:
-// - eventDetails (object containing event info)
-
-// Functions:
-// - fetchEventDetails: GET request to fetch detailed event info
-
-import { useState, useEffect } from 'react';
-
-function EventDetail({ eventId }) {
-    // State to store the detailed event information
-    const [eventDetails, setEventDetails] = useState(null);
-
-    // State to store any error that may occur during data fetching
+const EventDetail = ({ event, isUserEvent, onLike, onRemove, onEdit, onDelete, onClose, onAuthError }) => {
+    // State for handling error messages, initialized to null
     const [error, setError] = useState(null);
 
-    // Retrieve JWT token from local storage for authenticated requests
-    const getAuthToken = () => localStorage.getItem('token');
+    /**
+     * Retrieves the JWT token from localStorage.
+     * If no token is found, calls onAuthError to prompt re-authentication.
+     * @returns {string|null} - The JWT token or null if not found
+     */
+    const getToken = () => {
+        const token = localStorage.getItem('token');
+        if (!token && onAuthError) onAuthError();
+        return token;
+    };
 
-    // useEffect to fetch event details when component mounts or when eventId changes
-    useEffect(() => {
-        fetchEventDetails(); // Call fetch function to load data
-    }, [eventId]); // Re-run effect if eventId prop changes
+    /**
+     * Handles liking the event by calling the onLike function with the token.
+     * If an error occurs, updates the error state with an appropriate message.
+     */
+    const handleLike = async () => {
+        const token = getToken();
+        if (!token) return;
 
-    // Function to fetch event details from the backend API
-    const fetchEventDetails = async () => {
         try {
-            // Make a GET request to retrieve details of a specific event
-            const response = await fetch(`/api/user/event/${eventId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getAuthToken()}`, // Include JWT token in headers
-                },
-            });
-
-            // Check if the response was successful
-            if (!response.ok) throw new Error('Failed to fetch event details');
-
-            // Parse JSON data from the response
-            const data = await response.json();
-
-            // Update state with the event details
-            setEventDetails(data);
+            await onLike(event.event_id, token); // Calls onLike with event's ID and token
+            setError(null); // Clear previous errors
         } catch (err) {
-            // If an error occurs, store it in the error state
-            setError('Error fetching event details');
-            console.error('Error fetching event details:', err);
+            setError('Error liking event'); // Sets error state for UI display
+            console.error(err); // Logs error for debugging
         }
     };
 
-    // If an error occurs, display the error message
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    /**
+     * Handles removing the event from liked events by calling the onRemove function with the token.
+     * If an error occurs, updates the error state with an appropriate message.
+     */
+    const handleRemove = async () => {
+        const token = getToken();
+        if (!token) return;
 
-    // Show loading indicator while data is being fetched
-    if (!eventDetails) return <div>Loading...</div>;
+        try {
+            await onRemove(event.event_id, token); // Calls onRemove with event's ID and token
+            setError(null); // Clear previous errors
+        } catch (err) {
+            setError('Error removing event from liked events'); // Sets error state for UI display
+            console.error(err); // Logs error for debugging
+        }
+    };
 
-    // Render the event details once data is loaded
+    /**
+     * Initiates editing the event by calling the onEdit function.
+     * Passes the event object and token for editing.
+     */
+    const handleEdit = () => {
+        const token = getToken();
+        if (!token) return;
+
+        onEdit(event, token); // Passes the entire event object and token for editing
+    };
+
+    /**
+     * Handles deleting the event by calling the onDelete function with the token.
+     * If an error occurs, updates the error state with an appropriate message.
+     */
+    const handleDelete = async () => {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            await onDelete(event.event_id, token); // Calls onDelete with event's ID and token
+            setError(null); // Clear previous errors
+        } catch (err) {
+            setError('Error deleting event'); // Sets error state for UI display
+            console.error(err); // Logs error for debugging
+        }
+    };
+
     return (
-        <div>
-            <h2>{eventDetails.artist}</h2>
-            <p>Date: {eventDetails.date}</p>
-            <p>Venue: {eventDetails.venue_name}</p>
-            <p>Address: {eventDetails.venue_address}</p>
-            <p>Time: {eventDetails.time}</p>
-            <p>Cost: ${eventDetails.cost}</p>
+        <div className="event-detail">
+            {/* Back button to return to the previous view */}
+            <button onClick={onClose} className="close-btn">Back to Events</button>
+
+            {/* Event Title and Flier Image */}
+            <h2>{event.event_name}</h2>
+            <img src={event.flier_image} alt={event.event_name} className="event-flier" />
+
+            {/* Event Information Section */}
+            <div className="event-info">
+                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Venue:</strong> {event.venue_name}</p>
+                <p><strong>Address:</strong> {event.venue_address}</p>
+                <p><strong>Time:</strong> {event.time}</p>
+                <p><strong>Cost:</strong> ${event.cost}</p>
+            </div>
+
+            {/* Display error message if any actions fail */}
+            {error && <p className="error-message">{error}</p>}
+
+            {/* Event Actions Section */}
+            <div className="event-actions">
+                {isUserEvent ? (
+                    <>
+                        {/* Edit and Delete options available only for user-created events */}
+                        <button onClick={handleEdit} className="edit-btn">Edit Event</button>
+                        <button onClick={handleDelete} className="delete-btn">Delete Event</button>
+                    </>
+                ) : (
+                    // Show "Like" or "Remove from Liked Events" based on whether the event is already liked
+                    event.isLiked ? (
+                        <button onClick={handleRemove} className="remove-like-btn">Remove from Liked Events</button>
+                    ) : (
+                        <button onClick={handleLike} className="like-btn">Like Event</button>
+                    )
+                )}
+            </div>
         </div>
     );
-}
+};
 
 export default EventDetail;
