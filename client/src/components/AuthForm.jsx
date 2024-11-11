@@ -32,6 +32,7 @@ function AuthForm() {
 
     // Function to handle user registration
     const handleRegister = async (e) => {
+        console.log("handleRegister")
         e.preventDefault();
 
         // Validation checks for email, username, password match, and confirmed values
@@ -61,10 +62,11 @@ function AuthForm() {
         }
 
         try {
+            console.log(JSON.stringify({ "username": username, "email": email, "password": password }));
             const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ "username": username, "email": email, "password": password })
             });
 
             if (!response.ok) throw new Error('Registration failed');
@@ -82,6 +84,7 @@ function AuthForm() {
         e.preventDefault();
 
         try {
+            console.log(JSON.stringify({ email, password }));
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -119,7 +122,7 @@ function AuthForm() {
             <h2>{isRegisterMode ? 'Register' : 'Log In'}</h2>
 
             {/* Toggle between Register and Login */}
-            <button onClick={toggleMode}>
+            <button class="login_register" onClick={toggleMode}>
                 {isRegisterMode ? 'Switch to Login' : 'Switch to Register'}
             </button>
 

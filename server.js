@@ -169,7 +169,7 @@ app.post('/api/register', async (req, res) => {
 // Authenticates a user by verifying password and returns a JWT token on success
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-
+    console.log("email is", email, "password is", password)
     try {
         // Fetch user by email
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
@@ -178,10 +178,12 @@ app.post('/api/login', async (req, res) => {
         const user = result.rows[0];
 
         // Compare provided password with stored hashed password
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        console.log(user, user.password_hash);
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
         if (!passwordMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
         // Generate JWT token for authenticated user
+        console.log(result);
         const token = jwt.sign({ id: user.user_id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
@@ -381,8 +383,8 @@ app.use(express.static(path.join(__dirname, '../colvmn-v/client/dist')));
 
 // PROD: Ensure all routes are served the index.html file to allow React to manage routing (should be the last defined route)
 app.get('*', (req, res) => {
-    // res.sendFile(path.join(__dirname, '../colvmn-v/client/dist/index.html')
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'), (err) => {
+    //
+    res.sendFile(path.join(__dirname, '../colvmn-v/client/dist/index.html'), (err) => {
       if (err) {
         console.error("Error serving index.html:", err);
         res.status(500).send("Internal Server Error");

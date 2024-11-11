@@ -1,38 +1,159 @@
-.App {
-  text-align: center;
+/* General Reset */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Centering the main app container */
+#root, .app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Form Styles */
+form {
+    background-color: #111;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(255, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+form input,
+form button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #333;
+    font-size: 1rem;
+}
+
+/* Text Inputs */
+form input[type="text"],
+form input[type="password"],
+form input[type="email"] {
+    background-color: #222;
+    color: #fff;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="email"]:focus {
+    border: 1px solid #f00;
+    outline: none;
+}
+
+/* Button Style */
+form button {
+    background-color: #f00;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover,
+.login_register:hover {
+    background-color: #c00;
+}
+
+.login_register {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 15px;
 }
 
-.App-link {
-  color: #61dafb;
+/* Event Feed and Event Items */
+.event-feed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.event-item {
+    background-color: #111;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #f00;
+    width: 100%;
+}
+
+.event-item h3 {
+    color: #f00;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.event-item p {
+    color: #ddd;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Profile and Friends List */
+.profile,
+.friends-list {
+    background-color: #111;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.profile h2,
+.friends-list h2 {
+    color: #f00;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.profile p,
+.friends-list p {
+    color: #ddd;
+}
+
+.welcome {
+  max-height: 400px;
+}
+
+/* Links */
+a {
+    color: #f00;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #c00;
 }

@@ -3,6 +3,7 @@ import AuthForm from './components/AuthForm';
 import Events from './components/Event';
 import Profile from './components/Profile';
 import FriendsList from './components/FriendsList';
+import './App.css';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Tracks if the user is logged in
@@ -89,7 +90,7 @@ const App = () => {
     return (
         <div className="app-container">
             <header className="app-header">
-                <h1>Welcome To Colvmn V</h1>
+                <h1><img className="welcome" src="./src/welcome.png" alt="header"></img></h1>
                 {isAuthenticated && (
                     <button onClick={handleLogout} className="logout-btn">Logout</button>
                 )}
