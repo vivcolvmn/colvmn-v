@@ -10,18 +10,21 @@ const App = () => {
     const [view, setView] = useState('events'); // Controls which main component is displayed: 'events', 'profile', or 'friends'
     const [selectedFriendId, setSelectedFriendId] = useState(null); // Stores the ID of the selected friend for viewing their profile
     const [currentUser, setCurrentUser] = useState(null); // Stores current user data for the sidebar
+    const [token, setToken] = useState(localStorage.setItem('token', token)); // Store user-input token
 
     /**
      * Checks for an existing token in localStorage on app load to verify authentication status.
      * Sets the user as authenticated if a token is found.
      */
+
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        console.log(token);
         if (token) {
             setIsAuthenticated(true);
+            setToken(token);
             fetchCurrentUser(); // Fetch current user data
         }
-    }, []);
+    }, [token]);
 
     /**
      * Fetches current user data for display in the sidebar.
@@ -29,7 +32,7 @@ const App = () => {
     const fetchCurrentUser = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('/api/user/profile', {
+            const response = await fetch('/api/user/:user_id', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (response.ok) {

@@ -54,3 +54,6 @@ New User: Registration > Home Page (with empty event list) > Add Events > Explor
 Existing User: Login > Home Page (see events feed) > Like/Save Events > Add/Edit Events > Check Messages/Chat.
 Profile Management: Profile Page > Update Bio/Settings > View/Manage Personal Event List.
 Friend Management: Friends Page > Add/Delete/Block Friends > See Friends’ Events.
+
+### Update* 11/13 rescope and mvp
+cd into the cvmvp folder, you can find the current version of the mvp. It has been rescoped to remove features that require user authentication, which includes the real time chat features and friend management.
